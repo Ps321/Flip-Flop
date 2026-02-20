@@ -15,6 +15,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Grid Handler")]
     [SerializeField] private GridHandler gridHandler;
+
+    [Header("Score Manager")]
+    [SerializeField] private ScoreManager scoreManager;
+
     private List<Card> selectedCards = new List<Card>();
     private List<Card> allCards = new List<Card>();
     private int totalMatches;
@@ -100,13 +104,14 @@ public class GameManager : MonoBehaviour
     }
     private void CheckMatch(Card first, Card second)
     {
+        scoreManager.AddMove();
         if (first.Id == second.Id)
         {
             first.SetMatched();
             second.SetMatched();
 
-            score += GetScoreForMatch(first.Id);
-
+            // score += GetScoreForMatch(first.Id);
+            scoreManager.AddMatch(GetScoreForMatch(first.Id));
             currentMatches++;
 
             if (currentMatches >= totalMatches)
@@ -138,7 +143,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        Debug.Log("Game Over! Final Score: " + score);
+        Debug.Log("Game Over!");
         SaveSystem.Clear();
     }
 
