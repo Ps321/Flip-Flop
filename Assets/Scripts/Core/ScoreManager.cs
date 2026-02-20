@@ -8,6 +8,7 @@ public class ScoreManager : MonoBehaviour
 
     public event Action<int> OnScoreChanged;
     public event Action<int> OnMovesChanged;
+    public event Action<int, int> OnGameOver;
 
     public void AddMatch(int value)
     {
@@ -21,11 +22,8 @@ public class ScoreManager : MonoBehaviour
         OnMovesChanged?.Invoke(Moves);
     }
 
-    public void Reset()
+    public void GameOver()
     {
-        Score = 0;
-        Moves = 0;
-        OnScoreChanged?.Invoke(Score);
-        OnMovesChanged?.Invoke(Moves);
+        OnGameOver?.Invoke(Score, Moves);
     }
 }
