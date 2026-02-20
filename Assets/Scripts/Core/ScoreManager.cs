@@ -15,9 +15,9 @@ public class ScoreManager : MonoBehaviour
         OnScoreChanged?.Invoke(Score);
     }
 
-    public void AddMove()
+    public void AddMove(int moves = 1)
     {
-        Moves++;
+        Moves += moves;
         OnMovesChanged?.Invoke(Moves);
     }
 

@@ -35,6 +35,7 @@ public class MatchData
     public int columns;
     public int score;
     public int matchedPairs;
+    public int moves;
 
     public List<int> cardIds;
     public List<bool> matchedState;

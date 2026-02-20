@@ -154,7 +154,8 @@ public class GameManager : MonoBehaviour
         MatchData data = new MatchData();
         data.rows = rows;
         data.columns = columns;
-        data.score = score;
+        data.score = scoreManager.Score;
+        data.moves = scoreManager.Moves;
         data.matchedPairs = currentMatches;
         data.cardIds = new List<int>();
         data.matchedState = new List<bool>();
@@ -172,7 +173,8 @@ public class GameManager : MonoBehaviour
     {
         rows = data.rows;
         columns = data.columns;
-        score = data.score;
+        scoreManager.AddMatch(data.score);
+        scoreManager.AddMove(data.moves);
         currentMatches = data.matchedPairs;
         gridHandler.ConfigureGrid(rows, columns);
 
