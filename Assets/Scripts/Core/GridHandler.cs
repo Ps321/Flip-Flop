@@ -1,18 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GridLayoutGroup grid;
+    [SerializeField] private RectTransform gridRect;
+
+    public void ConfigureGrid(int rows, int columns)
     {
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = columns;
 
-    }
+        float width = gridRect.rect.width;
+        float height = gridRect.rect.height;
 
-    // Update is called once per frame
-    void Update()
-    {
+        float spacingX = grid.spacing.x;
+        float spacingY = grid.spacing.y;
 
+        float totalSpacingX = spacingX * (columns - 1);
+        float totalSpacingY = spacingY * (rows - 1);
+
+        float cellWidth = (width - totalSpacingX) / columns;
+        float cellHeight = (height - totalSpacingY) / rows;
+
+        grid.cellSize = new Vector2(cellWidth, cellHeight);
     }
 }

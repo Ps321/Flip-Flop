@@ -9,7 +9,11 @@ public class Card : MonoBehaviour
     public int Id { get; private set; }
     public bool isMatched { get; private set; }
     public bool isFlipped { get; private set; }
+
+    [Header("Card References")]
     [SerializeField] private Image frontImage;
+    [SerializeField] private Image backImage;
+
     private bool isAnimating;
     public event Action<Card> OnCardClicked;
     public void Initialize(int id, Sprite sprite)
@@ -22,7 +26,6 @@ public class Card : MonoBehaviour
     }
     public void Select()
     {
-        Debug.Log("Reach1");
         if (isMatched || isFlipped || isAnimating)
             return;
         OnCardClicked?.Invoke(this);
@@ -36,6 +39,13 @@ public class Card : MonoBehaviour
     public void SetMatched()
     {
         isMatched = true;
+        StartCoroutine(HideCard());
+    }
+    IEnumerator HideCard()
+    {
+        yield return new WaitForSeconds(0.5f);
+        frontImage.enabled = false;
+        backImage.enabled = false;
     }
 
     public void Flip(bool showFront)
@@ -74,4 +84,6 @@ public class Card : MonoBehaviour
         isFlipped = showFront;
         isAnimating = false;
     }
+
+
 }

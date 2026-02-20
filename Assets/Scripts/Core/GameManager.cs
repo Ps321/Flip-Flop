@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform gridParent;
     [SerializeField] private List<CardData> cardDataList;
 
+    [Header("Grid Handler")]
+    [SerializeField] private GridHandler gridHandler;
     private List<Card> selectedCards = new List<Card>();
     private int totalMatches;
     private int currentMatches;
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        gridHandler.ConfigureGrid(rows, columns);
         GenerateGrid();
     }
 
@@ -83,8 +86,54 @@ public class GameManager : MonoBehaviour
 
         if (selectedCards.Count == 2)
         {
-            // Check for match
+            CheckMatch();
+        }
+    }
+    private void CheckMatch()
+    {
+        Card first = selectedCards[0];
+        Card second = selectedCards[1];
+
+        if (first.Id == second.Id)
+        {
+            first.SetMatched();
+            second.SetMatched();
+
+            score += GetScoreForMatch(first.Id);
+
+            currentMatches++;
+
+            if (currentMatches >= totalMatches)
+            {
+                GameOver();
+            }
+
+            selectedCards.Clear();
+        }
+        else
+        {
+            StartCoroutine(FlipBackAfterDelay(first, second));
         }
     }
 
+    private IEnumerator FlipBackAfterDelay(Card first, Card second)
+    {
+        yield return new WaitForSeconds(0.6f);
+
+        first.Flip(false);
+        second.Flip(false);
+
+        selectedCards.Clear();
+    }
+
+    private int GetScoreForMatch(int id)
+    {
+        CardData data = cardDataList.Find(x => x.Id == id);
+        return data != null ? data.scoreValue : 0;
+    }
+
+    private void GameOver()
+    {
+        Debug.Log("Game Over! Final Score: " + score);
+    }
 }
