@@ -16,14 +16,22 @@ public class GameManager : MonoBehaviour
     [Header("Grid Handler")]
     [SerializeField] private GridHandler gridHandler;
     private List<Card> selectedCards = new List<Card>();
+    private List<Card> allCards = new List<Card>();
     private int totalMatches;
     private int currentMatches;
     private int score;
 
     private void Start()
     {
-        gridHandler.ConfigureGrid(rows, columns);
-        GenerateGrid();
+        MatchData data = SaveSystem.Load();
+
+        if (data != null)
+            LoadGame(data);
+        else
+        {
+            gridHandler.ConfigureGrid(rows, columns);
+            GenerateGrid();
+        }
     }
 
     private void GenerateGrid()
@@ -47,6 +55,7 @@ public class GameManager : MonoBehaviour
             Card card = Instantiate(cardPrefab, gridParent);
             card.Initialize(pairs[i].Id, pairs[i].Sprite);
             card.OnCardClicked += HandleCardClicked;
+            allCards.Add(card);
         }
     }
     private void Shuffle(List<CardData> list)
@@ -104,7 +113,7 @@ public class GameManager : MonoBehaviour
             {
                 GameOver();
             }
-
+            SaveGame();
         }
         else
         {
@@ -118,6 +127,7 @@ public class GameManager : MonoBehaviour
 
         first.Flip(false);
         second.Flip(false);
+        SaveGame();
     }
 
     private int GetScoreForMatch(int id)
@@ -129,5 +139,59 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         Debug.Log("Game Over! Final Score: " + score);
+        SaveSystem.Clear();
+    }
+
+
+    /***** Save System**********/
+    private void SaveGame()
+    {
+        MatchData data = new MatchData();
+        data.rows = rows;
+        data.columns = columns;
+        data.score = score;
+        data.matchedPairs = currentMatches;
+        data.cardIds = new List<int>();
+        data.matchedState = new List<bool>();
+
+        foreach (var card in allCards)
+        {
+            data.cardIds.Add(card.Id);
+            data.matchedState.Add(card.isMatched);
+        }
+
+        SaveSystem.Save(data);
+    }
+
+    private void LoadGame(MatchData data)
+    {
+        rows = data.rows;
+        columns = data.columns;
+        score = data.score;
+        currentMatches = data.matchedPairs;
+        gridHandler.ConfigureGrid(rows, columns);
+
+        totalMatches = (rows * columns) / 2;
+
+        for (int i = 0; i < data.cardIds.Count; i++)
+        {
+            CardData cardData = cardDataList.Find(x => x.Id == data.cardIds[i]);
+
+            Card card = Instantiate(cardPrefab, gridParent);
+            card.Initialize(cardData.Id, cardData.Sprite);
+            card.OnCardClicked += HandleCardClicked;
+
+            if (data.matchedState[i])
+            {
+                card.SetMatched(false);
+                card.Flip(true);
+            }
+
+            allCards.Add(card);
+        }
+        if (currentMatches >= totalMatches)
+        {
+            GameOver();
+        }
     }
 }

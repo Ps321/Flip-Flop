@@ -36,10 +36,16 @@ public class Card : MonoBehaviour
         isFlipped = value;
         frontImage.gameObject.SetActive(value);
     }
-    public void SetMatched()
+    public void SetMatched(bool hideAfterDelay = true)
     {
         isMatched = true;
-        StartCoroutine(HideCard());
+        if (hideAfterDelay)
+            StartCoroutine(HideCard());
+        else
+        {
+            frontImage.enabled = false;
+            backImage.enabled = false;
+        }
     }
     IEnumerator HideCard()
     {
