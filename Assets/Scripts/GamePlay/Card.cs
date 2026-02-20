@@ -20,11 +20,13 @@ public class Card : MonoBehaviour
         isMatched = false;
         isFlipped = false;
     }
-    void Select()
+    public void Select()
     {
+        Debug.Log("Reach1");
         if (isMatched || isFlipped || isAnimating)
             return;
         OnCardClicked?.Invoke(this);
+
     }
     public void ShowFront(bool value)
     {
