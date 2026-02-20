@@ -75,10 +75,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleCardClicked(Card card)
     {
-        if (selectedCards.Contains(card))
-            return;
-
-        if (selectedCards.Count >= 2)
+        if (card.isFlipped || card.isMatched)
             return;
 
         card.Flip(true);
@@ -86,14 +83,14 @@ public class GameManager : MonoBehaviour
 
         if (selectedCards.Count == 2)
         {
-            CheckMatch();
+            Card first = selectedCards[0];
+            Card second = selectedCards[1];
+            selectedCards.Clear();
+            CheckMatch(first, second);
         }
     }
-    private void CheckMatch()
+    private void CheckMatch(Card first, Card second)
     {
-        Card first = selectedCards[0];
-        Card second = selectedCards[1];
-
         if (first.Id == second.Id)
         {
             first.SetMatched();
@@ -108,7 +105,6 @@ public class GameManager : MonoBehaviour
                 GameOver();
             }
 
-            selectedCards.Clear();
         }
         else
         {
@@ -122,8 +118,6 @@ public class GameManager : MonoBehaviour
 
         first.Flip(false);
         second.Flip(false);
-
-        selectedCards.Clear();
     }
 
     private int GetScoreForMatch(int id)
