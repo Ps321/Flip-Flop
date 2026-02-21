@@ -23,8 +23,8 @@ public class UIManager : MonoBehaviour
     private void ShowGameOver(int score, int moves)
     {
         gameOverPanel.SetActive(true);
-        finalScoreText.text = $"Final Score: {score}";
-        finalMovesText.text = $"Total Moves: {moves}";
+        finalScoreText.text = score.ToString();
+        finalMovesText.text = moves.ToString();
         movesText.text = "";
         scoreText.text = "";
     }

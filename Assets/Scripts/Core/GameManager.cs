@@ -20,23 +20,48 @@ public class GameManager : MonoBehaviour
     [Header("Score Manager")]
     [SerializeField] private ScoreManager scoreManager;
 
+
     private List<Card> selectedCards = new List<Card>();
     private List<Card> allCards = new List<Card>();
     private int totalMatches;
     private int currentMatches;
     private int score;
 
-    private void Start()
-    {
-        MatchData data = SaveSystem.Load();
+    // private void Start()
+    // {
+    //     MatchData data = SaveSystem.Load();
 
-        if (data != null)
-            LoadGame(data);
-        else
-        {
-            gridHandler.ConfigureGrid(rows, columns);
-            GenerateGrid();
-        }
+    //     if (data != null)
+    //         LoadGame(data);
+    //     else
+    //     {
+    //         gridHandler.ConfigureGrid(rows, columns);
+    //         GenerateGrid();
+    //     }
+    // }
+    public void StartNewGame(int rows, int columns)
+    {
+        this.rows = rows;
+        this.columns = columns;
+
+        ClearBoard();
+
+        gridHandler.ConfigureGrid(rows, columns);
+        GenerateGrid();
+    }
+
+    public void ResumeGame(MatchData data)
+    {
+        ClearBoard();
+        LoadGame(data);
+    }
+
+    private void ClearBoard()
+    {
+        foreach (Transform child in gridParent)
+            Destroy(child.gameObject);
+
+        allCards.Clear();
     }
 
     private void GenerateGrid()
@@ -114,12 +139,12 @@ public class GameManager : MonoBehaviour
             // score += GetScoreForMatch(first.Id);
             scoreManager.AddMatch(GetScoreForMatch(first.Id));
             currentMatches++;
-
+            SaveGame();
             if (currentMatches >= totalMatches)
             {
                 GameOver();
             }
-            SaveGame();
+
         }
         else
         {

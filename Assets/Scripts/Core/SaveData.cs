@@ -28,16 +28,3 @@ public static class SaveSystem
             File.Delete(path);
     }
 }
-[System.Serializable]
-public class MatchData
-{
-    public int rows;
-    public int columns;
-    public int score;
-    public int matchedPairs;
-    public int moves;
-
-    public List<int> cardIds;
-    public List<bool> matchedState;
-    public List<bool> flippedState;
-}
