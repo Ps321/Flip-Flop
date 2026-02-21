@@ -57,6 +57,8 @@ public class Card : MonoBehaviour
     public void Flip(bool showFront)
     {
         if (isAnimating || isMatched) return;
+
+        if (showFront) AudioManager.Instance.Play(AudioType.Flip); //only play flip sound when showing front
         StartCoroutine(FlipAnimation(showFront));
     }
     IEnumerator FlipAnimation(bool showFront)
@@ -64,7 +66,6 @@ public class Card : MonoBehaviour
         isAnimating = true;
         float duration = 0.2f;
         float time = 0;
-
         while (time < duration)
         {
             float scale = Mathf.Lerp(1, 0, time / duration);

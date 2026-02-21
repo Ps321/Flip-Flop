@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum GameState
 {
@@ -12,6 +13,13 @@ public enum GameType
     Medium,
     Hard
 }
+public enum AudioType
+{
+    Flip,
+    Match,
+    Mismatch,
+    GameOver
+}
 
 [System.Serializable]
 public class DifficultyConfig
@@ -19,6 +27,12 @@ public class DifficultyConfig
     public GameType gameType;
     public int rows;
     public int columns;
+}
+[System.Serializable]
+public class Sound
+{
+    public AudioType type;
+    public AudioClip clip;
 }
 
 [System.Serializable]

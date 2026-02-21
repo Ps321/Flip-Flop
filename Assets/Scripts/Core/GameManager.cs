@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
         {
             first.SetMatched();
             second.SetMatched();
-
+            AudioManager.Instance.Play(AudioType.Match);
             // score += GetScoreForMatch(first.Id);
             scoreManager.AddMatch(GetScoreForMatch(first.Id));
             currentMatches++;
@@ -148,6 +148,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            AudioManager.Instance.Play(AudioType.Mismatch);
             StartCoroutine(FlipBackAfterDelay(first, second));
         }
     }
@@ -169,7 +170,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-
+        AudioManager.Instance.Play(AudioType.GameOver);
         scoreManager.GameOver();
         SaveSystem.Clear();
     }
