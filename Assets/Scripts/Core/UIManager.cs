@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -24,13 +25,19 @@ public class UIManager : MonoBehaviour
 
     private void ShowGameOver(int score, int moves)
     {
+        StartCoroutine(ShowGameOverCoroutine(score, moves));
+
+    }
+    private IEnumerator ShowGameOverCoroutine(int score, int moves)
+    {
+        yield return new WaitForSeconds(1.0f);
+        AudioManager.Instance.Play(AudioType.GameOver);
         gameOverPanel.SetActive(true);
         finalScoreText.text = score.ToString();
         finalMovesText.text = moves.ToString();
         movesText.text = "";
         scoreText.text = "";
     }
-
     private void OnDisable()
     {
         scoreManager.OnScoreChanged -= UpdateScore;

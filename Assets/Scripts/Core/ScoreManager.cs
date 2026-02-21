@@ -36,4 +36,13 @@ public class ScoreManager : MonoBehaviour
     {
         OnGameOver?.Invoke(Score, Moves);
     }
+
+    public void SetScoreAndMoves(int score, int moves)
+    {
+        Score = score;
+        Moves = moves;
+
+        OnScoreChanged?.Invoke(Score);
+        OnMovesChanged?.Invoke(Moves);
+    }
 }

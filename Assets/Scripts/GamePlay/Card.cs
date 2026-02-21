@@ -9,6 +9,7 @@ public class Card : MonoBehaviour
     public int Id { get; private set; }
     public bool isMatched { get; private set; }
     public bool isFlipped { get; private set; }
+    public CardData Data { get; private set; }
 
     [Header("Card References")]
     [SerializeField] private Image frontImage;
@@ -16,10 +17,11 @@ public class Card : MonoBehaviour
 
     private bool isAnimating;
     public event Action<Card> OnCardClicked;
-    public void Initialize(int id, Sprite sprite)
+    public void Initialize(CardData data)
     {
-        Id = id;
-        frontImage.sprite = sprite;
+        Id = data.Id;
+        Data = data;
+        frontImage.sprite = data.Sprite;
         ShowFront(false);
         isMatched = false;
         isFlipped = false;
@@ -91,6 +93,4 @@ public class Card : MonoBehaviour
         isFlipped = showFront;
         isAnimating = false;
     }
-
-
 }

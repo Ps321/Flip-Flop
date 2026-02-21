@@ -26,19 +26,14 @@ public class GameManager : MonoBehaviour
     private int totalMatches;
     private int currentMatches;
     private int score;
+    private Dictionary<int, CardData> cardLookup;
 
-    // private void Start()
-    // {
-    //     MatchData data = SaveSystem.Load();
-
-    //     if (data != null)
-    //         LoadGame(data);
-    //     else
-    //     {
-    //         gridHandler.ConfigureGrid(rows, columns);
-    //         GenerateGrid();
-    //     }
-    // }
+    private void Start()
+    {
+        cardLookup = new Dictionary<int, CardData>();
+        foreach (var data in cardDataList)
+            cardLookup[data.Id] = data;
+    }
     public void StartNewGame(int rows, int columns)
     {
         this.rows = rows;
@@ -83,7 +78,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < pairs.Count; i++)
         {
             Card card = Instantiate(cardPrefab, gridParent);
-            card.Initialize(pairs[i].Id, pairs[i].Sprite);
+            card.Initialize(pairs[i]);
             card.OnCardClicked += HandleCardClicked;
             allCards.Add(card);
         }
@@ -125,26 +120,25 @@ public class GameManager : MonoBehaviour
             Card first = selectedCards[0];
             Card second = selectedCards[1];
             selectedCards.Clear();
-            CheckMatch(first, second);
+            StartCoroutine(CheckMatch(first, second));
         }
     }
-    private void CheckMatch(Card first, Card second)
+    private IEnumerator CheckMatch(Card first, Card second)
     {
+        yield return new WaitForSeconds(0.2f);
         scoreManager.AddMove();
         if (first.Id == second.Id)
         {
             first.SetMatched();
             second.SetMatched();
             AudioManager.Instance.Play(AudioType.Match);
-            // score += GetScoreForMatch(first.Id);
-            scoreManager.AddMatch(GetScoreForMatch(first.Id));
+            scoreManager.AddMatch(first.Data.scoreValue);
             currentMatches++;
             SaveGame();
             if (currentMatches >= totalMatches)
             {
                 GameOver();
             }
-
         }
         else
         {
@@ -163,15 +157,8 @@ public class GameManager : MonoBehaviour
         SaveGame();
     }
 
-    private int GetScoreForMatch(int id)
-    {
-        CardData data = cardDataList.Find(x => x.Id == id);
-        return data != null ? data.scoreValue : 0;
-    }
-
     private void GameOver()
     {
-        AudioManager.Instance.Play(AudioType.GameOver);
         scoreManager.GameOver();
         SaveSystem.Clear();
     }
@@ -184,6 +171,11 @@ public class GameManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            SaveGame();
     }
 
 
@@ -212,8 +204,7 @@ public class GameManager : MonoBehaviour
     {
         rows = data.rows;
         columns = data.columns;
-        scoreManager.AddMatch(data.score);
-        scoreManager.AddMove(data.moves);
+        scoreManager.SetScoreAndMoves(data.score, data.moves);
         currentMatches = data.matchedPairs;
         gridHandler.ConfigureGrid(rows, columns);
 
@@ -224,7 +215,7 @@ public class GameManager : MonoBehaviour
             CardData cardData = cardDataList.Find(x => x.Id == data.cardIds[i]);
 
             Card card = Instantiate(cardPrefab, gridParent);
-            card.Initialize(cardData.Id, cardData.Sprite);
+            card.Initialize(cardData);
             card.OnCardClicked += HandleCardClicked;
 
             if (data.matchedState[i])
