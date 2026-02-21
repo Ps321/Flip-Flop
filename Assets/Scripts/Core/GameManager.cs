@@ -148,6 +148,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            scoreManager.AddMismatch();
             AudioManager.Instance.Play(AudioType.Mismatch);
             StartCoroutine(FlipBackAfterDelay(first, second));
         }

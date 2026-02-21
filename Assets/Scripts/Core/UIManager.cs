@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [Header("Game HUD")]
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text movesText;
+    [SerializeField] private TMP_Text comboText;
 
     [Header("Game Over Panel")]
     [SerializeField] private GameObject gameOverPanel;
@@ -17,6 +18,7 @@ public class UIManager : MonoBehaviour
     {
         scoreManager.OnScoreChanged += UpdateScore;
         scoreManager.OnMovesChanged += UpdateMoves;
+        scoreManager.OnComboChanged += UpdateCombo;
         scoreManager.OnGameOver += ShowGameOver;
     }
 
@@ -33,6 +35,7 @@ public class UIManager : MonoBehaviour
     {
         scoreManager.OnScoreChanged -= UpdateScore;
         scoreManager.OnMovesChanged -= UpdateMoves;
+        scoreManager.OnComboChanged -= UpdateCombo;
         scoreManager.OnGameOver -= ShowGameOver;
     }
 
@@ -44,5 +47,12 @@ public class UIManager : MonoBehaviour
     private void UpdateMoves(int value)
     {
         movesText.text = value.ToString();
+    }
+    private void UpdateCombo(int value)
+    {
+        if (value > 1)
+            comboText.text = "Combo x" + value;
+        else
+            comboText.text = "";
     }
 }
