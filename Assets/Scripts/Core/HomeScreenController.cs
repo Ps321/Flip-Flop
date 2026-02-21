@@ -51,14 +51,6 @@ public class HomeScreenController : MonoBehaviour
         gameManager.StartNewGame(config.rows, config.columns);
     }
 
-    private void ShowHome()
-    {
-        homeScreen.SetActive(true);
-        levelScreen.SetActive(false);
-        resumePopup.SetActive(false);
-        gameScreen.SetActive(false);
-    }
-
     private void ShowLevelSelection()
     {
         levelScreen.SetActive(true);
